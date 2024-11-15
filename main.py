@@ -1,5 +1,5 @@
-import os
 import streamlit as st
+import os
 import textwrap
 import google.generativeai as genai
 
@@ -9,21 +9,30 @@ GOOGLE_API_KEY = "AIzaSyA9u1nGTGjVyAvWPjEt9tbXI1vzsqh935k"
 # Configure the generative AI library
 genai.configure(api_key=GOOGLE_API_KEY)
 
-# Streamlit app setup
+# Function to format text into Markdown
+def to_markdown(text):
+    text = text.replace('•', '  *')
+    return textwrap.indent(text, '> ', predicate=lambda _: True)
+
+# Function to load OpenAI model and get response
+def get_gemini_response(question):
+    model = genai.GenerativeModel("gemini-pro")
+    response = model.generate_content(question)
+    return response.text
+
+# Initialize the Streamlit app
 st.set_page_config(page_title="Q&A Demo")
 st.header("Gemini Application")
 
-# Function to get Gemini response
-def get_gemini_response(question):
-    response = genai.generate_text(model='gemini-pro', prompt=question)
-    return response.result
+# Input text from the user
+input_text = st.text_input("Input:", key="input")
+submit = st.button("Ask the question")
 
-# App input and response
-input_text = st.text_input("Input: ", key="input")
-if st.button("Ask the question") and input_text:
+# If the "Ask" button is clicked
+if submit and input_text:
     try:
         response = get_gemini_response(input_text)
         st.subheader("The Response is")
-        st.write(response)
+        st.write(to_markdown(response))
     except Exception as e:
         st.error(f"An error occurred: {e}")
