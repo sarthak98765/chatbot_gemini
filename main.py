@@ -22,7 +22,7 @@ def get_gemini_response(question):
 
 # Initialize the Streamlit app
 st.set_page_config(page_title="Q&A Demo")
-st.header("Gemini Application")
+st.header("Flavours Fusion Application")
 
 # Input text from the user
 input_text = st.text_input("Input:", key="input")
